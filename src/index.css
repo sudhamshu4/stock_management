@@ -193,3 +193,140 @@ form button[type="button"] {
 .login-bottom-p a:hover {
   text-decoration: underline;
 }
+
+/* ---------------------------------------------------- */
+/* ✨ Signup-specific CSS appended below  */
+/* ---------------------------------------------------- */
+
+.signup-main {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.signup-left {
+  flex: 1;
+  background: url("C:\Users\HP\Documents\Reactjs\Login-Page-In-React-main\src\assets\image.png")
+    no-repeat center center/cover;
+  height: 100vh;
+}
+
+.signup-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.signup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.signup-logo img {
+  width: 50px;
+}
+
+.signup-center {
+  text-align: center;
+  width: 100%;
+}
+
+.signup-center h2 {
+  font-size: 3.5rem;
+  margin-bottom: 10px;
+}
+
+.signup-center p {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.signup-center form {
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-center form input {
+  width: 100%;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 0;
+  border-bottom: 1px solid black;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.signup-center form button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 30px;
+  background-color: black;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.signup-center form button:hover {
+  background-color: #333;
+}
+
+.signup-google {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 10px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  padding: 12px;
+  border-radius: 30px;
+}
+
+.signup-google:hover {
+  background-color: #c4c4c457;
+}
+
+.signup-google img {
+  width: 30px;
+}
+
+.signup-bottom-p {
+  margin-top: 20px;
+  font-size: 1.5rem;
+}
+
+.signup-bottom-p a {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signup-bottom-p a:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: red;
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+}
+.signup-select {
+  width: 100%;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 0;
+  border-bottom: 1px solid black;
+  outline: none;
+  background-color: #f9f9f9;
+}

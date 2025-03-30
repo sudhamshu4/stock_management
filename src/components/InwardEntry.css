@@ -1,0 +1,39 @@
+.inward-entry-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.inward-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.inward-form label {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.inward-form input {
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.inward-form button {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.inward-form button:hover {
+  background-color: #0056b3;
+}
