@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Logo from "../assets/logo.png";
-import GoogleSvg from "../assets/icons8-google.svg";
 import { FaEye } from "react-icons/fa6";
 import { FaEyeSlash } from "react-icons/fa6";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./Login.css";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,10 +22,13 @@ const Login = () => {
         "http://localhost:5000/login",
         formData
       );
-      // Handle success - navigate or store token
-      console.log(response.data);
-      localStorage.setItem("user", JSON.stringify(response.data.user)); // Store user info in localStorage
-      navigate("/home"); // Change to your target route
+
+      // ✅ Store JWT Token & User Info in localStorage
+      localStorage.setItem("token", response.data.token); // Store token
+      localStorage.setItem("user", JSON.stringify(response.data.user)); // Store user info
+      localStorage.setItem("userid", response.data.user.userid); // ✅ access nested user object
+
+      navigate("/home"); // Redirect to home page
     } catch (err) {
       setError(err.response?.data?.error || "Login failed!");
     }
@@ -46,9 +49,9 @@ const Login = () => {
             <form onSubmit={handleLogin}>
               <input
                 type="text"
-                name="userid"
-                placeholder="UserID"
-                value={formData.userid}
+                name="username"
+                placeholder="User name"
+                value={formData.username}
                 onChange={handleChange}
                 required
               />
@@ -80,17 +83,9 @@ const Login = () => {
               </div>
               <div className="login-center-buttons">
                 <button type="submit">Log In</button>
-                <button type="button">
-                  <img src={GoogleSvg} alt="Google Icon" />
-                  Log In with Google
-                </button>
               </div>
             </form>
           </div>
-
-          <p className="login-bottom-p">
-            Don&apos;t have an account? <Link to="/signup">Sign Up</Link>
-          </p>
         </div>
       </div>
     </div>

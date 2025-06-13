@@ -1,0 +1,135 @@
+/* Full-Page Layout */
+.signup-main {
+  position: relative;
+  height: 100vh;
+  width: 87vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* overflow: hidden; */
+}
+
+/* Left Blue Background (Acts as Page Background) */
+.signup-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #007bff;
+  z-index: 0;
+}
+
+/* Signup Content Container */
+.signup-right {
+  position: relative;
+  z-index: 1;
+  width: 80%;
+  max-width: 450px;
+  background: white;
+  padding: 3rem 4rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  margin: auto;
+}
+/* Logo */
+.signup-logo img {
+  height: 60px;
+  display: block;
+  margin: 0 auto 1rem;
+}
+
+/* Center Heading and Message */
+.signup-center {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.signup-center h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.signup-center p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Error Message */
+.error {
+  color: red;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Form Fields */
+form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+input,
+.signup-select {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  outline: none;
+}
+
+input:focus,
+.signup-select:focus {
+  border-color: #007aff;
+}
+
+/* Submit Button */
+button[type="submit"] {
+  grid-column: span 2;
+  padding: 1rem;
+  background-color: #007aff;
+  color: white;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #005fcc;
+}
+
+/* Bottom Text */
+.signup-bottom-p {
+  grid-column: span 2;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.signup-bottom-p a {
+  color: #007aff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Responsive Tweaks */
+@media (max-width: 600px) {
+  .signup-right {
+    padding: 2rem;
+    margin: 1rem;
+  }
+
+  form {
+    grid-template-columns: 1fr;
+  }
+
+  button[type="submit"],
+  .signup-google,
+  .signup-bottom-p {
+    grid-column: span 1;
+  }
+}

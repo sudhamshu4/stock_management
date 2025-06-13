@@ -1,13 +1,26 @@
 import { useState, useEffect } from "react";
+import { useRef } from "react";
 import axios from "axios";
 import "./Purchase_indent.css";
+import "./Purchase_order.css";
 
 const Purchase_indent = () => {
-  const [prNumber, setPrNumber] = useState(""); // ✅ Added state for PR number
+  const [showOtherItemForm, setShowOtherItemForm] = useState(false);
+  const [newOtherItem, setNewOtherItem] = useState({
+    name: "",
+    subcategory: "",
+  });
+  const [subcategories, setSubcategories] = useState([]);
+
   const [company, setCompany] = useState("");
   const [sbu, setSbu] = useState("");
   const [department, setDepartment] = useState("");
-  const [itemEntry, setItemEntry] = useState({ item: "", qty: "", remark: "" });
+  const [itemEntry, setItemEntry] = useState({
+    item: "",
+    qty: "",
+    remark: "",
+    customItem: "",
+  });
   const [items, setItems] = useState([]);
 
   const [companies, setCompanies] = useState([]);
@@ -16,21 +29,17 @@ const Purchase_indent = () => {
   const [itemList, setItemList] = useState([]);
 
   useEffect(() => {
-    // ✅ Fetch PR Number
     axios
-      .get("http://localhost:5000/api/get-pr-number")
-      .then((res) => setPrNumber(res.data.prNumber))
-      .catch((err) => console.log(err));
-
-    axios
-      .get("http://localhost:5000/api/companies")
+      .get(`http://localhost:5000/api/companies`)
       .then((res) => setCompanies(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.error("Error fetching companies:", err));
 
     axios
       .get("http://localhost:5000/api/items")
-      .then((res) => setItemList(res.data))
-      .catch((err) => console.log(err));
+      .then((res) =>
+        setItemList([...res.data, { itemid: "other", itemname: "Other" }])
+      )
+      .catch((err) => console.error("Error fetching items:", err));
   }, []);
 
   useEffect(() => {
@@ -38,7 +47,14 @@ const Purchase_indent = () => {
       axios
         .get(`http://localhost:5000/api/sbus/${company}`)
         .then((res) => setSbus(res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => console.error("Error fetching SBUs:", err));
+
+      setSbu("");
+      setDepartments([]);
+      setDepartment("");
+    } else {
+      setSbus([]);
+      setDepartments([]);
     }
   }, [company]);
 
@@ -47,23 +63,78 @@ const Purchase_indent = () => {
       axios
         .get(`http://localhost:5000/api/departments/${sbu}`)
         .then((res) => setDepartments(res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => console.error("Error fetching Departments:", err));
+
+      setDepartment("");
+    } else {
+      setDepartments([]);
     }
   }, [sbu]);
 
-  const handleAddItem = () => {
+  const indexRef = useRef(0); // Persistent index for "Other" items
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/subcategories")
+      .then((res) => setSubcategories(res.data))
+      .catch((err) => console.error("Error fetching subcategories:", err));
+  }, []);
+
+  const handleAddItem = async () => {
     if (!itemEntry.item || !itemEntry.qty) {
       alert("Please select an item and enter a quantity.");
       return;
     }
-    setItems([...items, itemEntry]);
-    setItemEntry({ item: "", qty: "", remark: "" });
+
+    const selectedItem = itemList.find(
+      (it) => String(it.itemid) === String(itemEntry.item)
+    );
+
+    const newItem = {
+      item: itemEntry.item === "other" ? itemEntry.customItem : itemEntry.item,
+      itemName:
+        itemEntry.item === "other"
+          ? itemEntry.customItem
+          : selectedItem?.itemname || "Unknown",
+      qty: itemEntry.qty,
+      remark: itemEntry.remark,
+    };
+
+    if (itemEntry.item === "other") {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/get-max-itemid"
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          const { maxItemMaster, maxItemDetail } = data;
+
+          // Calculate the new unique itemid
+          const lastItemId = Math.max(maxItemMaster, maxItemDetail) + 1;
+
+          // Increment first to ensure unique itemid per "Other" item
+          indexRef.current++;
+          newItem.itemid = lastItemId + indexRef.current;
+
+          console.log(
+            `ℹItem: ${newItem.itemName}, Storing itemid: ${newItem.itemid}`
+          );
+        } else {
+          console.error("error fetching max item IDs:", data.error);
+          newItem.itemid = 1001; // Fallback if error occurs
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+        newItem.itemid = 1001; // Fallback if error occurs
+      }
+    }
+
+    setItems([...items, newItem]); // Add new item to list
   };
 
   const handleDeleteItem = (index) => {
-    const updatedItems = [...items];
-    updatedItems.splice(index, 1);
-    setItems(updatedItems);
+    setItems(items.filter((_, i) => i !== index));
   };
 
   const handleSavePR = async () => {
@@ -76,23 +147,33 @@ const Purchase_indent = () => {
       return;
     }
 
+    // ✅ Get logged-in user ID from localStorage
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (!loggedInUser || !loggedInUser.userid) {
+      alert("User not logged in. Please log in again.");
+      return;
+    }
+
+    // ✅ Ensure itemname is included before sending
     const prData = {
       compid: company,
       sbuid: sbu,
       deptid: department,
-      items: items,
+      createdby: loggedInUser.userid, // ✅ Dynamically get user ID
+      items: items.map((it) => ({
+        item: it.item, // itemid or "other"
+        itemName: it.itemName, // item name for display
+        qty: it.qty,
+        remark: it.remark,
+      })),
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/save-pr",
-        prData
-      );
-      console.log(response.data);
-      alert("PR Saved Successfully");
+      await axios.post("http://localhost:5000/api/save-pr", prData);
+      alert("Purchase Request Saved Successfully");
       setItems([]);
     } catch (error) {
-      console.error(error);
+      console.error("Error saving PR:", error);
       alert("Error saving PR");
     }
   };
@@ -101,11 +182,7 @@ const Purchase_indent = () => {
     <div className="dashboard">
       <h2>Purchase Request Entry</h2>
 
-      {/* ✅ Display PR Number */}
-      <div className="form-section">
-        <label>PR Number:</label> {prNumber}
-      </div>
-
+      {/* Dropdown Section*/}
       <div className="form-section">
         <label>Company:</label>
         <select value={company} onChange={(e) => setCompany(e.target.value)}>
@@ -118,7 +195,11 @@ const Purchase_indent = () => {
         </select>
 
         <label>SBU:</label>
-        <select value={sbu} onChange={(e) => setSbu(e.target.value)}>
+        <select
+          value={sbu}
+          onChange={(e) => setSbu(e.target.value)}
+          disabled={!company}
+        >
           <option value="">Select SBU</option>
           {sbus.map((sb) => (
             <option key={sb.sbuid} value={sb.sbuid}>
@@ -131,6 +212,7 @@ const Purchase_indent = () => {
         <select
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
+          disabled={!sbu}
         >
           <option value="">Select Department</option>
           {departments.map((dept) => (
@@ -141,11 +223,21 @@ const Purchase_indent = () => {
         </select>
       </div>
 
+      {/* Item Entry Section */}
       <div className="item-entry">
         <label>Item:</label>
         <select
           value={itemEntry.item}
-          onChange={(e) => setItemEntry({ ...itemEntry, item: e.target.value })}
+          onChange={(e) =>
+            setItemEntry({
+              ...itemEntry,
+              item: e.target.value,
+              itemName:
+                itemList.find((it) => it.itemid === e.target.value)?.itemname ||
+                "",
+              customItem: "",
+            })
+          }
         >
           <option value="">Select Item</option>
           {itemList.map((it) => (
@@ -155,11 +247,87 @@ const Purchase_indent = () => {
           ))}
         </select>
 
+        {itemEntry.item === "other" && (
+          <>
+            <button onClick={() => setShowOtherItemForm(true)}>
+              Enter New Item
+            </button>
+            {showOtherItemForm && (
+              <div className="modal">
+                <h4>Add New Item</h4>
+                <label>Item Name:</label>
+                <input
+                  type="text"
+                  value={newOtherItem.name}
+                  onChange={(e) =>
+                    setNewOtherItem({ ...newOtherItem, name: e.target.value })
+                  }
+                />
+
+                <label>Subcategory:</label>
+                <select
+                  value={newOtherItem.subcategory}
+                  onChange={(e) =>
+                    setNewOtherItem({
+                      ...newOtherItem,
+                      subcategory: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Select Subcategory</option>
+                  {subcategories.map((sub) => (
+                    <option key={sub.subcategoryid} value={sub.subcategoryid}>
+                      {sub.subcategoryname}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  onClick={async () => {
+                    if (!newOtherItem.name || !newOtherItem.subcategory) {
+                      alert("Please enter all details.");
+                      return;
+                    }
+
+                    try {
+                      const res = await axios.post(
+                        "http://localhost:5000/api/add-other-item",
+                        {
+                          itemname: newOtherItem.name,
+                          subcategoryid: newOtherItem.subcategory,
+                        }
+                      );
+
+                      // Add the new item to the itemList
+                      const newItem = {
+                        itemid: res.data.itemid,
+                        itemname: res.data.itemname,
+                      };
+                      setItemList((prev) => [...prev, newItem]);
+
+                      setItemEntry({ ...itemEntry, item: newItem.itemid });
+                      setShowOtherItemForm(false);
+                    } catch (err) {
+                      console.error("Error adding item:", err);
+                      alert("Failed to add item.");
+                    }
+                  }}
+                >
+                  Add Item
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
         <label>Qty:</label>
         <input
           type="number"
           value={itemEntry.qty}
-          onChange={(e) => setItemEntry({ ...itemEntry, qty: e.target.value })}
+          onChange={(e) => {
+            const value = Math.max(0, Number(e.target.value)); //ensures non negative
+            setItemEntry({ ...itemEntry, qty: value });
+          }}
         />
 
         <label>Remark:</label>
@@ -171,13 +339,14 @@ const Purchase_indent = () => {
           }
         />
 
-        <button onClick={handleAddItem}>Add</button>
+        <button onClick={handleAddItem}>Add Item</button>
       </div>
 
+      {/* Items Table */}
       <table>
         <thead>
           <tr>
-            <th>Item</th>
+            <th>Item Name</th>
             <th>Qty</th>
             <th>Remark</th>
             <th>Action</th>
@@ -186,9 +355,7 @@ const Purchase_indent = () => {
         <tbody>
           {items.map((it, index) => (
             <tr key={index}>
-              <td>
-                {itemList.find((i) => i.itemid === parseInt(it.item))?.itemname}
-              </td>
+              <td>{it.itemName}</td>
               <td>{it.qty}</td>
               <td>{it.remark}</td>
               <td>
@@ -199,6 +366,7 @@ const Purchase_indent = () => {
         </tbody>
       </table>
 
+      {/* Save Button*/}
       <button onClick={handleSavePR}>Save</button>
     </div>
   );

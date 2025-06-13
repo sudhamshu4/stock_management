@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Logo from "../assets/logo.png";
-import GoogleSvg from "../assets/icons8-google.svg";
+
+import "./signup.css";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -22,11 +23,14 @@ const SignUp = () => {
     e.preventDefault();
     if (formData.password !== formData.repeatPassword)
       return setError("Passwords do not match!");
+
     try {
       await axios.post("http://localhost:5000/signup", formData);
-      navigate("/"); // ✅ Navigates to Login after successful signup
+      navigate("/"); // ✅ Redirects to Login after successful signup
     } catch (error) {
-      setError(error.response?.data?.error || "Signup failed!");
+      setError(
+        error.response?.data?.error || "Signup failed! Please try again."
+      );
     }
   };
 
@@ -89,15 +93,6 @@ const SignUp = () => {
 
               <button type="submit">Sign Up</button>
             </form>
-
-            <div className="signup-google">
-              <img src={GoogleSvg} alt="Google" />
-              <span>Sign up with Google</span>
-            </div>
-
-            <p className="signup-bottom-p">
-              Already have an account? <Link to="/">Login</Link>
-            </p>
           </div>
         </div>
       </div>

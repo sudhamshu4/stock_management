@@ -1,89 +1,151 @@
 import { useState, useEffect } from "react";
-import Button from "./ui/button";
+import "./Approval_page.css";
 
 const ApprovalPage = () => {
+  const currentUser = JSON.parse(localStorage.getItem("user"))?.userid || null;
+
   const [requests, setRequests] = useState([]);
   const [updates, setUpdates] = useState({});
+  const [approvedQuantities, setApprovedQuantities] = useState({});
 
   useEffect(() => {
-    // Fetch purchase requests from backend
-    fetch("/api/purchase-requests")
+    fetch("http://localhost:5000/api/approval-list")
       .then((res) => res.json())
       .then((data) => setRequests(data))
       .catch((err) => console.error("Error fetching requests:", err));
   }, []);
 
-  const handleApproval = (id, status) => {
+  const handleQuantityChange = (uniqueid, value) => {
+    const intValue = value ? Math.max(1, parseInt(value, 10)) : "";
+    setApprovedQuantities((prev) => ({
+      ...prev,
+      [uniqueid]: intValue,
+    }));
+  };
+
+  const handleApproval = (uniqueid, status) => {
+    if (status === "Approved" && !approvedQuantities[uniqueid]) {
+      alert("Please enter an approved quantity before approving.");
+      return;
+    }
+
+    const now = new Date().toISOString().slice(0, 19).replace("T", " "); // Correct format
+
     setUpdates((prev) => ({
       ...prev,
-      [id]: {
+      [uniqueid]: {
         status,
-        approvedBy: "Admin",
-        approvedDate: new Date().toISOString(),
+        approvedBy: currentUser,
+        approvedDate: now, // Proper format for MariaDB
+        approvedQuantity:
+          status === "Approved" ? approvedQuantities[uniqueid] : 0,
       },
     }));
   };
 
   const handleSave = () => {
-    const updatesArray = Object.keys(updates).map((id) => ({
-      id,
-      ...updates[id],
+    const updatesArray = Object.keys(updates).map((uniqueid) => ({
+      uniqueid,
+      ...updates[uniqueid],
     }));
 
-    fetch("/api/update-purchase-requests", {
+    fetch("http://localhost:5000/api/update-purchase-requests", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatesArray),
     })
-      .then((res) => res.json())
-      .then(() => alert("Updates saved successfully!"))
-      .catch((err) => console.error("Error saving updates:", err));
+      .then((res) => res.json()) // Parse the response JSON
+      .then((data) => {
+        if (data.success) {
+          alert("Updates saved successfully!");
+          window.location.reload(); // Refresh the page to reflect changes
+        } else {
+          alert("Failed to update: " + data.error);
+        }
+      })
+      .catch((err) => {
+        console.error("Error saving updates:", err);
+        alert("An error occurred while updating. Please try again.");
+      });
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-lg">
-      <h1 className="text-xl font-bold mb-4">Purchase Request Approvals</h1>
-      <table className="w-full border-collapse border border-gray-200">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border px-4 py-2">PR Number</th>
-            <th className="border px-4 py-2">Item</th>
-            <th className="border px-4 py-2">Quantity</th>
-            <th className="border px-4 py-2">Status</th>
-            <th className="border px-4 py-2">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {requests.map((req) => (
-            <tr key={req.id} className="text-center">
-              <td className="border px-4 py-2">{req.prNumber}</td>
-              <td className="border px-4 py-2">{req.item}</td>
-              <td className="border px-4 py-2">{req.quantity}</td>
-              <td className="border px-4 py-2">
-                {updates[req.id]?.status || req.status}
-              </td>
-              <td className="border px-4 py-2 space-x-2">
-                <Button
-                  onClick={() => handleApproval(req.id, "Approved")}
-                  className="bg-green-500 hover:bg-green-600"
-                >
-                  Approve
-                </Button>
-                <Button
-                  onClick={() => handleApproval(req.id, "Declined")}
-                  className="bg-red-500 hover:bg-red-600"
-                >
-                  Decline
-                </Button>
-              </td>
+    <div className="approval-container">
+      <h1 className="approval-heading">Pending Purchase Requests</h1>
+      <div className="approval-table-container">
+        <table className="approval-table">
+          <thead>
+            <tr>
+              <th>PR Number</th>
+              <th>Company</th>
+              <th>SBU</th>
+              <th>Department</th>
+              <th>Item Name</th>
+              <th>Requested Quantity</th>
+              <th>Remark</th>
+              <th>Stock Quantity</th>
+              <th>Approved Quantity</th>
+              <th></th> {/* Empty header for buttons */}
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="mt-4 text-center">
-        <Button onClick={handleSave} className="bg-blue-500 hover:bg-blue-600">
+          </thead>
+          <tbody>
+            {requests.map((req) => (
+              <tr key={req.uniqueid}>
+                <td>{req.uniqueid}</td>
+                <td>{req.company}</td>
+                <td>{req.sbu}</td>
+                <td>{req.department}</td>
+                <td>{req.itemname || req.itemid}</td>
+                <td>{req.requestedQuantity}</td>
+                <td>{req.remark}</td>
+                <td>{req.stockQuantity ?? "N/A"}</td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={approvedQuantities[req.uniqueid] ?? ""}
+                    onChange={(e) =>
+                      handleQuantityChange(req.uniqueid, e.target.value)
+                    }
+                    disabled={updates[req.uniqueid]?.status === "Rejected"}
+                  />
+                </td>
+                <td className="action-buttons">
+                  <button
+                    onClick={() => handleApproval(req.uniqueid, "Approved")}
+                    className={`approve-btn ${
+                      updates[req.uniqueid]?.status === "Approved"
+                        ? "selected"
+                        : ""
+                    }`}
+                  >
+                    {updates[req.uniqueid]?.status === "Approved"
+                      ? "Approved"
+                      : "Approve"}
+                  </button>
+                  <button
+                    onClick={() => handleApproval(req.uniqueid, "Rejected")}
+                    className={`decline-btn ${
+                      updates[req.uniqueid]?.status === "Rejected"
+                        ? "selected"
+                        : ""
+                    }`}
+                  >
+                    {updates[req.uniqueid]?.status === "Rejected"
+                      ? "Declined"
+                      : "Decline"}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="save-container">
+        <button onClick={handleSave} className="save-btn">
           Save
-        </Button>
+        </button>
       </div>
     </div>
   );

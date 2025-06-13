@@ -1,39 +1,79 @@
 .inward-entry-container {
-  max-width: 400px;
+  max-width: 1200px;
   margin: auto;
-  padding: 20px;
+  padding: 2rem;
+  background-color: #f7f7f7;
   border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.inward-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  color: #333;
 }
 
 .inward-form {
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
 }
 
-.inward-form label {
-  margin-top: 10px;
+.inward-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.inward-field label {
+  display: block;
   font-weight: bold;
+  margin-bottom: 0.4rem;
 }
 
-.inward-form input {
-  padding: 8px;
-  margin-top: 5px;
+.inward-field input,
+.inward-field select,
+.inward-field textarea {
+  width: 100%;
+  padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
-.inward-form button {
-  margin-top: 15px;
-  padding: 10px;
+.inward-actions {
+  text-align: right;
+  margin-top: 1rem;
+}
+
+.inward-actions button {
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 5px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 4px;
   cursor: pointer;
 }
 
-.inward-form button:hover {
+.inward-actions button:hover {
   background-color: #0056b3;
+}
+
+.inward-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: rgb(255, 255, 255);
+}
+
+.inward-table th,
+.inward-table td {
+  border: 1px solid #cccccc;
+  padding: 0.6rem;
+  text-align: center;
+}
+
+.inward-table th {
+  background-color: #007bff;
+  font-weight: bold;
 }

@@ -1,0 +1,74 @@
+.return-container {
+  padding: 30px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  max-width: 1000px;
+  margin: auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.return-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.return-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.center-button {
+  grid-column: span 2;
+  text-align: center;
+}
+
+.center-button button {
+  padding: 10px 20px;
+  background-color: #007bfc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.center-button button:hover {
+  background-color: #005fbd;
+}
+
+.return-table {
+  width: 100%;
+  margin-top: 30px;
+  border-collapse: collapse;
+}
+
+.return-table th,
+.return-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.return-table input[type="number"] {
+  width: 70px;
+  padding: 5px;
+  border-radius: 4px;
+}

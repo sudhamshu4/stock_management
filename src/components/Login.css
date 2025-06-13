@@ -1,0 +1,159 @@
+/* === Page Layout === */
+.login-main {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f4ff, #d9e4ff);
+}
+
+.login-left {
+  flex: 1;
+  display: none; /* Hidden on small screens */
+  background-color: #007bff !important; /* Force solid blue */
+  background-image: none !important; /* Remove any background image */
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 768px) {
+  .login-left {
+    display: block;
+  }
+}
+
+/* Right side with form */
+.login-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-right-container {
+  background: #fff;
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.login-logo {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.login-logo img {
+  width: 100px;
+  height: auto;
+}
+
+/* Form Center Content */
+.login-center {
+  text-align: center;
+}
+
+.login-center h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.login-center p {
+  color: #666;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.error {
+  color: red;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Inputs */
+.login-center form input[type="text"],
+.login-center form input[type="password"] {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.login-center form input:focus {
+  border-color: #007aff;
+}
+
+/* Password input with icon */
+.pass-input-div {
+  position: relative;
+  width: 100%;
+}
+
+.pass-input-div input {
+  width: 100%;
+  padding: 0.8rem 2.8rem 0.8rem 0.8rem; /* extra right padding for icon */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.pass-input-div svg {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #555;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* Options Row */
+.login-center-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.remember-div {
+  display: flex;
+  align-items: center;
+}
+
+.remember-div input {
+  margin-right: 5px;
+}
+
+.forgot-pass-link {
+  text-decoration: none;
+  color: #007aff;
+}
+
+.forgot-pass-link:hover {
+  text-decoration: underline;
+}
+
+/* Button */
+.login-center-buttons button {
+  width: 100%;
+  padding: 0.9rem;
+  background: #007aff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-center-buttons button:hover {
+  background: #005fcc;
+}

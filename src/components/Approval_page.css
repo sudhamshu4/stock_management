@@ -1,0 +1,117 @@
+/* General Styling */
+.approval-container {
+  position: relative;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* Approval Table */
+.approval-table-container {
+  max-height: 500px; /* Adjust the height based on your needs */
+  overflow-y: auto; /* Enables vertical scrolling */
+  border: 1px solid #ccc;
+  margin-top: 10px;
+}
+
+.approval-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.approval-table thead {
+  position: sticky;
+  top: 0;
+  background-color: white; /* Keeps header visible while scrolling */
+  z-index: 2;
+}
+
+.approval-table th,
+.approval-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.approval-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+.approval-table td input {
+  width: 80px;
+  padding: 5px;
+  text-align: center;
+}
+
+/* Buttons */
+.action-buttons {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}
+
+.approve-btn,
+.decline-btn {
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.approve-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.approve-btn.selected {
+  background-color: #1e7e34;
+}
+
+.decline-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.decline-btn.selected {
+  background-color: #a71d2a;
+}
+
+/* Save Button */
+.save-container {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.save-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.save-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Logout Button Fix */
+.logout-button {
+  position: fixed;
+  top: 10px;
+  right: 20px;
+  background-color: #ff5c5c;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  z-index: 10; /* Keeps it above the table */
+}
+
+.logout-button:hover {
+  background-color: #cc4949;
+}

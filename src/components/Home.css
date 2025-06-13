@@ -38,8 +38,13 @@
 }
 
 .content {
-  flex: 1;
-  padding: 20px;
+  flex: 1; /* Takes up remaining space after the sidebar */
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  flex-direction: column;
+  height: 100vh; /* Full height of viewport */
+  width: 100%; /* Ensures full width */
 }
 
 /* Profile Container */
@@ -49,6 +54,9 @@
   align-items: center; /* Center align horizontally */
   justify-content: center; /* Center align vertically */
   gap: 5px; /* Space between image and text */
+
+  position: relative; /* Needed for z-index to work */
+  z-index: 9999; /* Very high value to ensure it stays on top */
 }
 
 /* Profile Picture */
@@ -58,18 +66,33 @@
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid white;
+  z-index: 9999;
 }
 
 /* Username */
 .profile-name {
-  font-size: 14px; /* Adjust size as needed */
+  font-size: 14px;
   font-weight: bold;
-  color: rgba(215, 19, 19, 0.797); /* Change color if needed */
+  color: rgba(215, 19, 19, 0.797);
   text-align: center;
+  z-index: 9999;
 }
+
+/* Logout Button */
 .logout-btn {
-  font-size: 14px; /* Adjust size as needed */
+  font-size: 14px;
   font-weight: bold;
-  /*color: rgba(71, 19, 215, 0.797); /* Change color if needed */
+  color: rgba(71, 19, 215, 0.797);
   text-align: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.logout-btn:hover {
+  background: blanchedalmond !important;
+  color: rgba(71, 19, 215, 0.797) !important;
+  box-shadow: none !important;
+  border: none !important;
 }
