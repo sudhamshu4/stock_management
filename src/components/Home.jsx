@@ -30,7 +30,7 @@ const Home = () => {
   const roleAccess = {
     Approver: ["Approval"],
     Purchase: ["PurchaseIndent", "PurchaseOrderEntry"],
-    Inventory: ["InwardEntry", "IssueEntry"],
+    Inventory: ["InwardEntry", "IssueEntry", "ReturnEntry"],
     Manager: [
       "PurchaseIndent",
       "Approval",
@@ -39,6 +39,7 @@ const Home = () => {
       "IssueEntry",
       "ReturnEntry",
       "StockReport",
+      "EmployeeAssetReport",
       "SignUp",
     ],
     SuperAdmin: [
@@ -49,6 +50,7 @@ const Home = () => {
       "IssueEntry",
       "ReturnEntry",
       "StockReport",
+      "EmployeeAssetReport",
       "SignUp",
     ], // Masters can be added later
   };
@@ -102,6 +104,12 @@ const Home = () => {
         {roleAccess[role]?.includes("StockReport") && (
           <button onClick={() => setSelectedPage("StockReport")}>
             Stock Report
+          </button>
+        )}
+
+        {roleAccess[role]?.includes("EmployeeAssetReport") && (
+          <button onClick={() => setSelectedPage("EmployeeAssetReport")}>
+            Employee Asset Report
           </button>
         )}
         {roleAccess[role]?.includes("SignUp") && (
