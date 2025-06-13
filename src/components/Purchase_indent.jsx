@@ -254,7 +254,7 @@ const Purchase_indent = () => {
             </button>
             {showOtherItemForm && (
               <div className="modal">
-                <h4>Add New Item</h4>
+                <h3>Add New Item</h3>
                 <label>Item Name:</label>
                 <input
                   type="text"

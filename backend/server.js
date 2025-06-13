@@ -169,7 +169,7 @@ app.post("/api/add-other-item", (req, res) => {
 
   const insertQuery = `
     INSERT INTO item_master (subcategoryid, itemname, quantity)
-    VALUES (?, ?, 1)
+    VALUES (?, ?, 0)
   `;
 
   db.query(insertQuery, [subcategoryid, itemname], (err, result) => {
