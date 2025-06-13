@@ -144,7 +144,7 @@ const InwardEntry = () => {
 
   return (
     <div className="inward-entry-container">
-      <h2 className="inward-title">Inward Entry Module</h2>
+      <h2 className="inward-title">Inward Entry</h2>
       <form className="inward-form" onSubmit={handleSubmit}>
         <div className="inward-grid">
           <div className="inward-field">
